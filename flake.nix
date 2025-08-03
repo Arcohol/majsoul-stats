@@ -23,26 +23,23 @@
       system:
       let
         overlays = [ (import rust-overlay) ];
-        pkgs = import nixpkgs {
-          inherit system overlays;
-        };
+        pkgs = import nixpkgs { inherit system overlays; };
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       in
       {
-        devShells.default =
-          with pkgs;
-          mkShell {
-            buildInputs = [
-              pkg-config
-              openssl
-              (rust-bin.stable.latest.default.override {
-                extensions = [
-                  "rust-src"
-                  "rust-analyzer"
-                ];
-              })
-            ];
-          };
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            pkg-config
+            openssl
+            (rust-bin.stable.latest.default.override {
+              extensions = [
+                "rust-src"
+                "rust-analyzer"
+              ];
+            })
+          ];
+        };
+        packages.default = pkgs.callPackage ./default.nix { };
         formatter = treefmtEval.config.build.wrapper;
       }
     );
