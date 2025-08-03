@@ -28,7 +28,7 @@ Nickname: {{ player_name }}<br />
       <td>{{ m.start_time.format("%Y-%m-%d %H:%M") }}</td>
       <td>{{ m.duration_minutes }} min</td>
       <td>{{ m.game_type }}</td>
-      <td {% if m.player_rank==1 %} style="color: red;" {% elif m.player_rank==3 %} style="color: green;" {% endif %}>
+      <td {% if m.player_rank==1 %} style="color: red;" {% elif m.player_rank>=3 %} style="color: green;" {% endif %}>
         {{ m.pt_change }}
       </td>
       <td>
