@@ -13,6 +13,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       rust-overlay,
       flake-utils,
@@ -22,8 +23,13 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        overlays = [ (import rust-overlay) ];
-        pkgs = import nixpkgs { inherit system overlays; };
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            (import rust-overlay)
+            self.overlays.default
+          ];
+        };
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       in
       {
@@ -39,8 +45,11 @@
             })
           ];
         };
-        packages.default = pkgs.callPackage ./default.nix { };
+        packages.default = pkgs.majsoul-stats;
         formatter = treefmtEval.config.build.wrapper;
       }
-    );
+    )
+    // {
+      overlays.default = final: prev: { majsoul-stats = final.callPackage ./default.nix { }; };
+    };
 }
