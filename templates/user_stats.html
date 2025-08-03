@@ -1,0 +1,44 @@
+<style>
+  body {
+    font-family: monospace;
+    font-size: 20px;
+  }
+
+  th,
+  td {
+    text-align: left;
+  }
+</style>
+Nickname: {{ player_name }}<br />
+<table style="width: 100%;">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Date & Time</th>
+      <th>Duration</th>
+      <th>Game Type</th>
+      <th>Points Change</th>
+      <th>Players & Scores</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in game_history %}
+    <tr>
+      <td>{{ m.player_rank }}</td>
+      <td>{{ m.start_time.format("%Y-%m-%d %H:%M") }}</td>
+      <td>{{ m.duration_minutes }} min</td>
+      <td>{{ m.game_type }}</td>
+      <td {% if m.player_rank==1 %} style="color: red;" {% elif m.player_rank==3 %} style="color: green;" {% endif %}>
+        {{ m.pt_change }}
+      </td>
+      <td>
+        <span>
+          {% for player in m.player_results %}
+          <span> {{ player.name }}({{ player.final_score }}) </span>
+          {% endfor %}
+        </span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
